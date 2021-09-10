@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW")
+}
+
+model User {
+  id                Int                 @id @default(autoincrement())
+  name              String
+  username          String
+  email             String              @unique(map: "User.email_unique")
+  password          String
+  Favourites        Favourites[]
+  Listings          Listings[]
+  previous_owner  Transaction_Table[] @relation("previous owner")
+  new_owner  Transaction_Table[]  @relation("new owner")
+}
+
+model Track {
+  id         Int        @id @default(autoincrement())
+  artistName String     @db.VarChar(255)
+  trackName  String     @db.VarChar(255)
+  coverURL   String     @db.VarChar(255)
+  Listings   Listings[]
+}
+
+model Listings {
+  id                Int                 @id @default(autoincrement())
+  user              Int
+  track             Int?
+  price             Float
+  forSale           Boolean             @default(true)
+  notes             String              @db.VarChar(255)
+  condition         String              @db.VarChar(255)
+  format            Format              @default(MP3)
+  dateAdded         DateTime            @default(now())
+  albumId           Int?
+  Album             Album?              @relation(fields: [albumId], references: [id])
+  Track             Track?              @relation(fields: [track], references: [id])
+  User              User                @relation(fields: [user], references: [id], onDelete: Cascade)
+  Favourites        Favourites[]
+  Transaction_Table Transaction_Table[]
+}
+
+model Album {
+  id        Int        @id @default(autoincrement())
+  artist    String
+  albumname String
+  coverURL  String
+  Listings  Listings[]
+}
+
+model Favourites {
+  id       Int      @id @default(autoincrement())
+  user     Int
+  listing  Int
+  Listings Listings @relation(fields: [listing], references: [id], onDelete: Cascade)
+  User     User     @relation(fields: [user], references: [id], onDelete: Cascade)
+}
+
+enum Format {
+  DUBPLATE
+  MP3
+  VINYL6
+  VINAL7
+  VINAL10
+  VINAL12
+  ALBUM
+}
+
+model Transaction_Table {
+  id        Int        @id @default(autoincrement())
+  previous_ownerId  Int
+  new_ownerId Int
+  listing   Int
+  Listing   Listings   @relation(fields: [listing], references: [id])
+  previous_owner  User  @relation("previous owner", fields: [previous_ownerId], references: [id], onDelete: Cascade)
+  new_owner       User  @relation("new owner", fields: [new_ownerId], references: [id], onDelete: Cascade)
+}
+
