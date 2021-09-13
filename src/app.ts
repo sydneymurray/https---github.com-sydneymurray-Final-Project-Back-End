@@ -30,7 +30,9 @@ var app = express();
 // view engine setup
 
 app.use(
-  cors()
+  cors({
+    origin: "https://613f83abc3d65000075acbe4--cranky-wiles-4327db.netlify.app"
+  })
 );
 
 app.use(logger("dev"));
