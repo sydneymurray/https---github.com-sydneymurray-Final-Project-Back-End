@@ -31,7 +31,8 @@ var app = express();
 
 app.use(
   cors({
-    origin: "https://613f83abc3d65000075acbe4--cranky-wiles-4327db.netlify.app"
+    origin: "https://613f83abc3d65000075acbe4--cranky-wiles-4327db.netlify.app",
+    credentials: true
   })
 );
 
