@@ -1,2 +1,2 @@
 release: npx prisma migrate deploy
-web: npm run compile
+web: npx tsc && node ./bin/www || exit 1
