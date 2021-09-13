@@ -30,10 +30,9 @@ var app = express();
 // view engine setup
 
 app.use(
-  cors({
-    credentials: true
-  })
+  cors()
 );
+
 app.use(logger("dev"));
 app.use(express.json());
 app.use(cookieParser());
