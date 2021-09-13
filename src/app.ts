@@ -31,8 +31,7 @@ var app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
-    credentials: true,
+    credentials: true
   })
 );
 app.use(logger("dev"));
@@ -40,7 +39,10 @@ app.use(express.json());
 app.use(cookieParser());
 //app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use('/', indexRouter);
+app.all("*", (req, res) => {
+  res.status(404).json("Route Not Found");
+});
+
 app.use(authRouter);
 app.use((req, res, next) => {
   const token = req.cookies.token;
@@ -61,8 +63,6 @@ app.use("/tracks", trackRouter);
 app.use("/transactions", transactionRouter);
 
 // catch 404 and forward to error handler
-app.all("*", (req, res) => {
-  res.status(404).json("Route Not Found");
-});
+
 
 module.exports = app;
